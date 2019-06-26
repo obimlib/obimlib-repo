@@ -11,12 +11,14 @@ class Application
 
             try {
 
-                $query = Router::resolveQuery($_SERVER['REQUEST_URI'], $config);
+//                $query = Router::resolveQuery($_SERVER['REQUEST_URI'], $config);
 
-                if ($query['query_type'] === NOTE_PAGE) {
+  //              if ($query['query_type'] === NOTE_PAGE) {
+                if ($_GET['type'] === 'note') {
                     Viewer::render('views/note_page.php', []);
                 }
-                if ($query['query_type'] === SEND_PAGE) {
+                if ($_GET['type'] === 'send') {
+    //            if ($query['query_type'] === SEND_PAGE) {
                     Viewer::render('views/user_page.php', []);
                 }
 
