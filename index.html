@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <title>Оформление подписки</title>
+        <meta charset="utf-8">
+        <style>
+            .note-window {
+                z-index: 10;
+                width: 215px;
+                height: 75px;
+                background: #f7f7f7;
+                border: 2px solid #ededed;
+                -webkit-border-radius: 15px;
+                -moz-border-radius: 15px;
+                border-radius: 15px;
+                overflow: hidden;
+                position: fixed;
+                right: 4%;
+                bottom: 4%;
+                box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+                cursor: pointer;
+                transition: background 0.2s;
+                font-size: 13px;
+                font-family: Calibri;
+            }
+            .note-window:hover {
+                background: #fdfdfd;
+            }
+            .note-window-header {
+                font-size: 14px;
+                padding: 2px 11px;
+            }
+            .note-window-divide-line {
+                height: 1px;
+                border-bottom: 1px solid #ccc;
+                margin: 0 auto 5px;
+                width: 90%;
+
+            }
+            .note-window-content {
+                padding: 0 11px;
+                color: #333;
+            }
+            body {
+                padding-top: 50px;
+                background: #fcfcfc;
+            }
+            h2 {
+                display: block;
+                font-family: Arial, sans-serif;
+                margin: 0 auto;
+                text-align: center;
+                font-size: 34px;
+                color: #333;
+            }
+
+        </style>
+        <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>-->
+
+        <script type="text/javascript" src="https://www.gstatic.com/firebasejs/3.6.8/firebase.js"></script>
+        <!--<script type="text/javascript" src="/firebase_subscribe.js" defer></script>-->
+
+    </head>
+    <body>
+        <header>
+            <button type="button" id="subscribe">Следить за изменениями</button>
+            <div class="standart-block">
+                <h2>Подписка на PUSH-уведомления</h2>
+            </div>
+        </header>
+        <main>
+            <div class="standart-block">
+            </div>
+        </main>
+    </body>
+    <script defer>
+        firebase.initializeApp({
+            messagingSenderId: '17465665194'
+        });
+
+        // Браузер поддерживает уведомления - вообще, эту проверку должна делать
+        //    библиотека Firebase, но она этого не делает
+        if ('Notification' in window) {
+
+            var messaging = firebase.messaging();
+
+            // Пользователь уже разрешил получение уведомлений, подписываем на уведомления если
+            //    еще не подписали
+            //if (Notification.permission === 'granted') {
+                subscribe();
+            //}
+
+            //$('#subscribe').on('click', function () {
+            //    subscribe();
+            //});
+        }
+
+        function subscribe() {
+
+            // Запрашиваем разрешение на получение уведомлений
+            messaging.requestPermission()
+                .then(function () {
+
+                    // Получаем ID устройства
+                    messaging.getToken()
+                        .then(function (currentToken) {
+
+                            console.log(currentToken);
+
+                            if (currentToken) {
+
+                                //.sendTokenSentToServer(false);
+
+                            } else {
+
+                                console.warn('Не удалось получить токен');
+                                //setTokenSentToServer(false);
+                            }
+                        })
+                        .catch(function (err) {
+                            console.warn('При получении токена произошла ошибка.', err);
+                        });
+            })
+            .catch(function (err) {
+
+                console.warn('Не удалось получить разрешение на показ уведомлений.', err);
+            });
+        }
+
+        // Отправка ID на сервер
+        function sendTokenToServer(currentToken) {
+
+            if (!isTokenSentToServer(currentToken)) {
+                console.log('Отправка токена на сервер...');
+
+                // Адрес скрипта на сервере который сохраняет ID устройства
+                var url = '';
+                // Раскомментировать
+                //$.post(url, {
+                //    token: currentToken
+                //});
+
+                setTokenSentToServer(currentToken);
+
+            } else {
+
+                console.log('Токен уже отправлен на сервер');
+            }
+        }
+
+        // Используем localStorage для отметки того, что пользователь уже подписался на уведомления
+        function isTokenSentToServer() {
+            return window.localStorage.getItem('sentFirebaseMessagingToken') === currentToken;
+        }
+
+        function setTokenSentToServer(currentToken) {
+            window.localStorage.setItem(
+                'sentFirebaseMessagingToken',
+                currentToken ? currentToken: ''
+            );
+        }
+
+        // Обработчик onMessage
+        // Обработчик события прихода сообщения в браузер в случае когда пользователь ходит по страницам сайта
+        if ('Notification' in window) {
+            var messaging = firebase.messaging();
+
+            messaging.onMessage(function(payload) {
+
+                console.log('Message received. ', payload);
+
+                // Уведомление с учетом мобильной версии
+                Notification.requestPermission(function(result) {
+                    if (result==='granted') {
+                        navigator.serviceWorker.ready.then(function(registration) {
+
+                            // Параметры уведомления - сохраняем здесь, чтобы можно было обработать затем click по уведомлению
+                            payload.notification.data = payload.notification;
+
+                            console.log("T9 - GetMessage");
+
+                            // Здесь мы показываем уведомление (если все отработало хорошо)
+                            return registration.showNotification(payload.notification.title, payload.notification);
+
+                        }).catch(function(error) {
+
+                            console.log('ServiceWorker registartion failed', error);
+                        });
+                    }
+                });
+            });
+        }
+
+        // Здесь вопрос - нужно ли переносить в firebase-messaging-sw.js
+        // Обработка клика по-уведомлению в ServiceWorker-е
+        // Перенести в файл messaging-sw.js
+        self.addEventListener('notificationclick', function(event) {
+
+            const target = event.notification.data.click_action || '/';
+            event.notification.close();
+
+            // Этот код должен проверять список открытых вкладок и переключаться на открытую вкладку
+            //    со ссылкой если такая есть - иначе открывать новую вкладку
+            event.waitUntil(clients.matchAll({
+                type: 'window',
+                includeUncontrolled: true
+
+            }).then(function(clientList) {
+
+                // clientList почему-то всегда пуст
+                for (var i=0; i<clientList.length; i++) {
+
+                    var client = clientList[i];
+                    if (client.url == target && 'focus' in client) {
+                        return client.focus();
+                    }
+                }
+
+                return clients.openWindow(target);
+            }));
+        });
+
+    </script>
+
+    <script>
+        /*
+        function showNotificationWindow(header, message) {
+
+            var body_elem = document.querySelector('body');
+
+            var note_window_header = document.createElement('div');
+            note_window_header .className="note-window-header";
+            note_window_header .innerHTML = header;
+
+            var note_window_divide_line = document.createElement('div');
+            note_window_divide_line.className="note-window-divide-line";
+
+            var note_window_content = document.createElement('div');
+            note_window_content.className="note-window-content";
+            note_window_content.innerHTML = message;
+
+            var note_window = document.createElement('div');
+            note_window.className="note-window";
+            note_window.appendChild(note_window_header);
+            note_window.appendChild(note_window_divide_line);
+            note_window.appendChild(note_window_content);
+
+            body_elem.appendChild(note_window);
+        }
+
+        function subscribeUserToPush() {
+
+            return navigator.serviceWorker.register('.service-worker.js')
+                    .then(function(registration) {
+                        var subscribeOptions = {
+                            userVisibleOnly: true,
+                            applicationServerKey: btoa('BEl62iUYgUivxIkv69yViEuiBIa-Ib9-SkvMeAtA3LFgDzkrxZJjSgSnfckjBJuBkr3qBUYIHBQFLXYp5Nksh8U')
+                        };
+
+                        return registration.pushManager.subscribe(subscribeOptions);
+                    })
+                    .then(function(pushSubscription)) {
+
+                        console.log('PushSubscription: ', JSON.stringify(pushSubscription));
+                        return pushSubscription;
+                    });
+        }
+        */
+    </script>
+    <script defer>
+        /*
+        if (Notification.permission==='granted') {
+
+            window.addEventListener('load', function () {
+                var socket = io('http://localhost:300');
+                socket.on('bimlib_note', function (data) {
+                    showNotificationWindow(data.header, data.message)
+                });
+            });
+
+        } else {
+
+            function requestPermission() {
+
+                return new Promise(function (resolve, reject) {
+
+                    const permissionResult = Notification.requestPermission(function (result) {
+                        resolve(result);
+                    });
+
+                    if (permissionResult) {
+                        permissionResult.then(resolve, reject);
+                    }
+                })
+                .then(function (permissionResult) {
+
+                    if (permissionResult==='granted') {
+
+                        if ('serviceWorker' in navigator) {
+                            window.addEventListener('load', function () {
+                                navigator.serviceWorker.register('./socket.js').then(function(registration) {
+                                    console.log('ServiceWorker registration successful');
+                                }, function (err) {
+                                    console.log('ServiceWorker registration failed: ', err);
+                                });
+                            });
+                        } else {
+                            console.log("Not service Worker in browser");
+                        }
+
+                    } else {
+                        console.log('No permission get');
+                    }
+                });
+            }
+
+            requestPermission();
+        }
+        */
+    </script>
+</html>
