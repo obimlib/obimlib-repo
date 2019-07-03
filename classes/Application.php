@@ -61,7 +61,34 @@ class Application
     }
 
     // Пишут что нужно запускать через консоль (если не пойдет - проверить)
-    public static function sendPushMessage() {
+    public static function sendPushMessage()
+    {
+        /*
+        $query_url = 'https://bimlib.amocrm.ru/api/v2/contacts?limit_rows=500&limit_offset=3000';
+
+        $curl = curl_init();
+
+        curl_setopt($curl,CURLOPT_RETURNTRANSFER,true);
+        curl_setopt($curl,CURLOPT_USERAGENT,'amoCRM-API-client/1.0');
+        curl_setopt($curl,CURLOPT_URL,$query_url);
+        curl_setopt($curl,CURLOPT_HEADER,false);
+        curl_setopt($curl,CURLOPT_COOKIEFILE,dirname(__FILE__).'/cookie.txt');
+        curl_setopt($curl,CURLOPT_COOKIEJAR,dirname(__FILE__).'/cookie.txt');
+        curl_setopt($curl,CURLOPT_SSL_VERIFYPEER,0);
+        curl_setopt($curl,CURLOPT_SSL_VERIFYHOST,0);
+
+
+        $out=curl_exec($curl);
+        $code=(int)curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        curl_close($curl);
+
+        //$list = static::curlQuery($query_url);
+        echo "<pre>";
+        print_r($out);
+        echo "</pre><br><br>";
+        exit();*/
+
+
 
         $url = 'https://fcm.googleapis.com/fcm/send';
         $api_key = 'AAAABBEI5qo:APA91bFGUcnVfVEAq3EMjMWxcDikpIX12r8jX-lazn90Yyv1bLPCblggbARbExoqsPhRdiNtLHD9wCvEQyvxzy8oIOkKtzCVfjujm-p664QfyeXot-rHRXAgC6A7CJYUbJgEOFZptfdY';
@@ -72,12 +99,12 @@ class Application
         $request_body = [
             //'to'=>$token_id,
             // Пока делаем в одиночном варианте - через to
-            'to'=>'',
+            'to'=>'e8dLmON_JTU:APA91bEwVmNVSNOc5jSPoa8MIFP_7GXWRKT-IaYKCiFKqi2hIO4ehdzBxh6Fu4iktxgZ4v8X6Brt9u40Qo27PL1Ntr9H6Z9uP7OUFL4XOr4pW7UXVWOyuQgVvj31nGiY_kXVdeN3nUz0',
             'notification'=>[
                 'title'=>'Уведомление',
                 'body'=>sprintf('Начало в %s', date('H:i')),
 //                'icon'=>'https://',
-                'click_action'=>'http://mail.ru'
+                'click_action'=>'https://mail.ru'
             ]
         ];
 
@@ -95,14 +122,20 @@ class Application
         curl_setopt($channel, CURLOPT_POSTFIELDS, $fields);
         curl_setopt($channel, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($channel, CURLOPT_FOLLOWLOCATION, true);
-        $repsonse = curl_exec($channel);
-        curl_close();
+        curl_setopt($channel,CURLOPT_SSL_VERIFYPEER,0);
+        curl_setopt($channel,CURLOPT_SSL_VERIFYHOST,0);
 
-        echo '<pre>';
-        print_r($response);
-        echo '</pre>';
-        exit();
+        $response = curl_exec($channel);
+        //$code = curl_getinfo($channel);
+        curl_close($channel);
+
+        //echo '<pre>';
+        //print_r($code);
+        //echo '</pre>';
+        //exit();
         // Потом проверить отработку cURL
+
+
     }
 
 }

@@ -18,7 +18,15 @@ define('ROOT_PATH', realpath(dirname(__FILE__)).DIRECTORY_SEPARATOR);
 require __DIR__ . '/config/bootstrap.php';
 $config = require __DIR__ . '/config/main.php';
 
-echo 'Testing';
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+
+set_error_handler(function ($err_severity, $err_msg, $err_file, $err_line) {
+    throw new \ErrorException ($err_msg, 0, $err_severity, $err_file, $err_line);
+});
+
+//echo 'Testing';
 
 include "classes/exceptions/RequestException.php";
 include "classes/exceptions/DatabaseException.php";
