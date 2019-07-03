@@ -18,6 +18,8 @@ define('ROOT_PATH', realpath(dirname(__FILE__)).DIRECTORY_SEPARATOR);
 require __DIR__ . '/config/bootstrap.php';
 $config = require __DIR__ . '/config/main.php';
 
+echo 'Testing';
+
 include "classes/exceptions/RequestException.php";
 include "classes/exceptions/DatabaseException.php";
 include "classes/exceptions/CommonException.php";
