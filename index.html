@@ -92,38 +92,6 @@
             //});
         }
 
-        function subscribe() {
-
-            // Запрашиваем разрешение на получение уведомлений
-            messaging.requestPermission()
-                .then(function () {
-
-                    // Получаем ID устройства
-                    messaging.getToken()
-                        .then(function (currentToken) {
-
-                            console.log(currentToken);
-
-                            if (currentToken!=='undefined') {
-
-                                sendTokenToServer(currentToken);
-
-                            } else {
-
-                                console.warn('Не удалось получить токен');
-                                //setTokenSentToServer(false);
-                            }
-                        })
-                        .catch(function (err) {
-                            console.warn('При получении токена произошла ошибка.', err);
-                        });
-            })
-            .catch(function (err) {
-
-                console.warn('Не удалось получить разрешение на показ уведомлений.', err);
-            });
-        }
-
         // Отправка ID на сервер
         function sendTokenToServer(currentToken) {
 
@@ -158,6 +126,40 @@
                 currentToken ? currentToken: ''
             );
         }
+
+        function subscribe() {
+
+            // Запрашиваем разрешение на получение уведомлений
+            messaging.requestPermission()
+                .then(function () {
+
+                    // Получаем ID устройства
+                    messaging.getToken()
+                        .then(function (currentToken) {
+
+                            console.log(currentToken);
+
+                            if (currentToken!=='undefined') {
+
+                                sendTokenToServer(currentToken);
+
+                            } else {
+
+                                console.warn('Не удалось получить токен');
+                                //setTokenSentToServer(false);
+                            }
+                        })
+                        .catch(function (err) {
+                            console.warn('При получении токена произошла ошибка.', err);
+                        });
+            })
+            .catch(function (err) {
+
+                console.warn('Не удалось получить разрешение на показ уведомлений.', err);
+            });
+        }
+
+        
 
         // Обработчик onMessage
         // Обработчик события прихода сообщения в браузер в случае когда пользователь ходит по страницам сайта
