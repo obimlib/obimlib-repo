@@ -106,7 +106,7 @@
 
                             if (currentToken!=='undefined') {
 
-                                sendTokenSentToServer(currentToken);
+                                sendTokenToServer(currentToken);
 
                             } else {
 
@@ -129,13 +129,6 @@
 
             if (!isTokenSentToServer(currentToken)) {
                 console.log('Отправка токена на сервер...');
-
-                // Адрес скрипта на сервере который сохраняет ID устройства
-                //var url = '';
-                // Раскомментировать
-                //$.post(url, {
-                //    token: currentToken
-                //});
                 
                 var xhr = new XMLHttpRequest();
 
