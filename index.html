@@ -100,7 +100,7 @@
                 
                 var xhr = new XMLHttpRequest();
 
-                var params = 'type=save' +
+                var params = 'type=' + encodeURIComponent('save')
                   '&token=' + encodeURIComponent(currentToken);
 
                 xhr.open("GET", '/index.php?' + params, true);
