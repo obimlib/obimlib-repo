@@ -69,7 +69,7 @@
         </header>
         <main>
             <div class="standart-block">
-                <form method="POST" action="/index.php/?type=push-send">
+                <form method="POST" action="/index.php?type=push-send">
                     <div class="field-container">
                         <h3>Заголовок сообщения</h3>
                         <input type="text" placeholder="Заголовок" class="header-field form-input-style" name="title">

@@ -103,7 +103,8 @@
                 var params = 'type=' + encodeURIComponent('save')
                   '&token=' + encodeURIComponent(currentToken);
 
-                xhr.open("GET", '/index.php?' + params, true);
+                //xhr.open("GET", '/index.php?' + params, true);
+                xhr.open("GET", 'http://push.data.ms.bimlib.ru:8036/index.php?' + params, true);
                 //xhr.onreadystatechange = ...;
                 xhr.send();
 
