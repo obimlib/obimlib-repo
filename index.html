@@ -55,7 +55,6 @@
             }
 
         </style>
-        <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>-->
 
         <script type="text/javascript" src="https://www.gstatic.com/firebasejs/3.6.8/firebase.js"></script>
         <!--<script type="text/javascript" src="/firebase_subscribe.js" defer></script>-->
@@ -107,7 +106,7 @@
 
                             if (currentToken) {
 
-                                //.sendTokenSentToServer(false);
+                                sendTokenSentToServer(currentToken);
 
                             } else {
 
@@ -132,11 +131,20 @@
                 console.log('Отправка токена на сервер...');
 
                 // Адрес скрипта на сервере который сохраняет ID устройства
-                var url = '';
+                //var url = '';
                 // Раскомментировать
                 //$.post(url, {
                 //    token: currentToken
                 //});
+                
+                var xhr = new XMLHttpRequest();
+
+                var params = 'type=save' +
+                  '&token=' + encodeURIComponent(surname);
+
+                xhr.open("GET", '/index.php?' + params, true);
+                //xhr.onreadystatechange = ...;
+                xhr.send();
 
                 setTokenSentToServer(currentToken);
 
@@ -220,102 +228,4 @@
 
     </script>
     </body>
-    
-
-    <script>
-        /*
-        function showNotificationWindow(header, message) {
-
-            var body_elem = document.querySelector('body');
-
-            var note_window_header = document.createElement('div');
-            note_window_header .className="note-window-header";
-            note_window_header .innerHTML = header;
-
-            var note_window_divide_line = document.createElement('div');
-            note_window_divide_line.className="note-window-divide-line";
-
-            var note_window_content = document.createElement('div');
-            note_window_content.className="note-window-content";
-            note_window_content.innerHTML = message;
-
-            var note_window = document.createElement('div');
-            note_window.className="note-window";
-            note_window.appendChild(note_window_header);
-            note_window.appendChild(note_window_divide_line);
-            note_window.appendChild(note_window_content);
-
-            body_elem.appendChild(note_window);
-        }
-
-        function subscribeUserToPush() {
-
-            return navigator.serviceWorker.register('.service-worker.js')
-                    .then(function(registration) {
-                        var subscribeOptions = {
-                            userVisibleOnly: true,
-                            applicationServerKey: btoa('BEl62iUYgUivxIkv69yViEuiBIa-Ib9-SkvMeAtA3LFgDzkrxZJjSgSnfckjBJuBkr3qBUYIHBQFLXYp5Nksh8U')
-                        };
-
-                        return registration.pushManager.subscribe(subscribeOptions);
-                    })
-                    .then(function(pushSubscription)) {
-
-                        console.log('PushSubscription: ', JSON.stringify(pushSubscription));
-                        return pushSubscription;
-                    });
-        }
-        */
-    </script>
-    <script defer>
-        /*
-        if (Notification.permission==='granted') {
-
-            window.addEventListener('load', function () {
-                var socket = io('http://localhost:300');
-                socket.on('bimlib_note', function (data) {
-                    showNotificationWindow(data.header, data.message)
-                });
-            });
-
-        } else {
-
-            function requestPermission() {
-
-                return new Promise(function (resolve, reject) {
-
-                    const permissionResult = Notification.requestPermission(function (result) {
-                        resolve(result);
-                    });
-
-                    if (permissionResult) {
-                        permissionResult.then(resolve, reject);
-                    }
-                })
-                .then(function (permissionResult) {
-
-                    if (permissionResult==='granted') {
-
-                        if ('serviceWorker' in navigator) {
-                            window.addEventListener('load', function () {
-                                navigator.serviceWorker.register('./socket.js').then(function(registration) {
-                                    console.log('ServiceWorker registration successful');
-                                }, function (err) {
-                                    console.log('ServiceWorker registration failed: ', err);
-                                });
-                            });
-                        } else {
-                            console.log("Not service Worker in browser");
-                        }
-
-                    } else {
-                        console.log('No permission get');
-                    }
-                });
-            }
-
-            requestPermission();
-        }
-        */
-    </script>
 </html>

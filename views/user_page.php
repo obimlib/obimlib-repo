@@ -69,30 +69,19 @@
         </header>
         <main>
             <div class="standart-block">
-                <div class="field-container">
-                    <h3>Заголовок сообщения</h3>
-                    <input type="text" placeholder="Заголовок" class="header-field form-input-style">
-                </div>
-                <div class="field-container">
-                    <h3>Содержание</h3>
-                    <input type="text" placeholder="Содержание" class="content-field form-input-style">
-                </div>
-                <button class="send-message">Отослать сообщения</button>
+                <form method="POST" action="/index.php/?type=push-send">
+                    <div class="field-container">
+                        <h3>Заголовок сообщения</h3>
+                        <input type="text" placeholder="Заголовок" class="header-field form-input-style" name="title">
+                    </div>
+                    <div class="field-container">
+                        <h3>Содержание</h3>
+                        <input type="text" placeholder="Содержание" class="content-field form-input-style" name="content">
+                    </div>
+                    <input type="submit" value="Отослать сообщения" class="send-message">
+                </form>
+                <!--<button class="send-message">Отослать сообщения</button>-->
             </div>
         </main>
     </body>
-    <script>
-        var socket = io('http://localhost:300');
-        var button = document.querySelector('.send-message');
-        button.addEventListener('click', function () {
-            var header = document.querySelector(".header-field").value;
-            var content = document.querySelector(".content-field").value;
-
-            //console.dir(typeof(header));
-            if (header!=='' && content!== '') {
-                socket.emit('admin_message', {'header': header, 'message': content});
-            }
-//            socket.emit('admin_message', {'header': 'new-head', 'message': "new-info"});
-        });
-    </script>
 </html>

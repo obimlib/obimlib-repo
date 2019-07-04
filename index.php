@@ -26,12 +26,11 @@ set_error_handler(function ($err_severity, $err_msg, $err_file, $err_line) {
     throw new \ErrorException ($err_msg, 0, $err_severity, $err_file, $err_line);
 });
 
-//echo 'Testing';
-
 include "classes/exceptions/RequestException.php";
 include "classes/exceptions/DatabaseException.php";
 include "classes/exceptions/CommonException.php";
 include "classes/exceptions/ProcessException.php";
+include "classes/FileLinker.php";
 include "classes/Router.php";
 include "classes/Viewer.php";
 include "classes/Application.php";
