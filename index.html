@@ -116,16 +116,16 @@
         }
 
         // Используем localStorage для отметки того, что пользователь уже подписался на уведомления
-        function isTokenSentToServer() {
-            return window.localStorage.getItem('sentFirebaseMessagingToken') === currentToken;
-        }
-
-        function setTokenSentToServer(currentToken) {
-            window.localStorage.setItem(
-                'sentFirebaseMessagingToken',
-                currentToken ? currentToken: ''
-            );
-        }
+//        function isTokenSentToServer() {
+//            return window.localStorage.getItem('sentFirebaseMessagingToken') === currentToken;
+//        }
+//
+//        function setTokenSentToServer(currentToken) {
+//            window.localStorage.setItem(
+//                'sentFirebaseMessagingToken',
+//                currentToken ? currentToken: ''
+//            );
+//        }
 
         function subscribe() {
 
